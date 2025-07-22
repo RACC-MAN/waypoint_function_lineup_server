@@ -17,14 +17,15 @@ namespace waypoint_function
         public:
             explicit LineupServer(const rclcpp::NodeOptions & options);
             void Update(const std_msgs::msg::Empty::SharedPtr) override;
-            void FunctionCallback(const std::shared_ptr<waypoint_function_msgs::srv::Command::Request> request,
-                    std::shared_ptr<waypoint_function_msgs::srv::Command::Response> response) override;
+            void FunctionCallback(const std::shared_ptr<waypoint_function_msgs::srv::Command::Request> ,
+                    std::shared_ptr<waypoint_function_msgs::srv::Command::Response> ) override;
 
         private:
 			void targetPoseCallback(const geometry_msgs::msg::PoseStamped::SharedPtr msg);
 			void currentPoseCallback(const geometry_msgs::msg::PoseWithCovarianceStamped::SharedPtr msg);
 			void scanCallback(const sensor_msgs::msg::LaserScan::SharedPtr msg);
             float calc_distance(geometry_msgs::msg::Point pos1, geometry_msgs::msg::Point pos2);
+            void finishLineup();
 
 			bool lineupAvairable_;
 			float dist_tolerance_ = 1.0;
