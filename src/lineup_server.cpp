@@ -13,6 +13,7 @@ waypoint_function::LineupServer::LineupServer(const rclcpp::NodeOptions &options
     scan_sub_ = create_subscription<sensor_msgs::msg::LaserScan>("scan", 10,
         std::bind(&LineupServer::scanCallback, this, std::placeholders::_1));
 
+    timer_ = create_wall_timer(0.05s, std::bind(&LineupServer::send_move_direction, this));
     pub_vel_ = create_publisher<geometry_msgs::msg::Twist>("cmd_vel",10);
 }
 
@@ -48,14 +49,29 @@ void waypoint_function::LineupServer::scanCallback(const sensor_msgs::msg::Laser
     for (size_t i = 0; i < msg->ranges.size(); ++i) {
       float distance = msg->ranges[i];
       float angle = delta_angle * i + msg->angle_min;
+      
+      float y = distance * sin(angle);
+      if(y*y >= scan_range_y_*scan_range_y_) continue;
+
+      float x = distance * cos(angle);
+      if(x >= 0 && x <= scan_range_x_ ) point_counter++;
     }
 
+    // printf("pc:%d, fc:%d\n", point_counter, frame_counter_);
     if(point_counter < scan_tolerance_)
     {
         frame_counter_++;
-        if(frame_counter_ > frame_tolerance_) moveExecute_ = true;
+        if(frame_counter_ > frame_tolerance_)
+        {
+            moveExecute_ = true;
+            // printf("execute to move");
+        } 
     }
-    else frame_counter_ = 0;
+    else
+    {
+        moveExecute_ = false;
+        frame_counter_ = 0;
+    } 
 }
 
 void waypoint_function::LineupServer::send_move_direction()
@@ -73,23 +89,31 @@ void waypoint_function::LineupServer::send_move_direction()
     float dx = tarPose.position.x - curPose.position.x;
     float dy = tarPose.position.y - curPose.position.y;
     float theta = atan2(dy, dx);
-    dist_sq = dx*dx + dy*dy;
+    float dist_sq = dx*dx + dy*dy;
+
+    printf("dist:%f\n", dist_sq);
 
     if(dist_sq < dist_tolerance_*dist_tolerance_)
     {
         pub_vel_->publish(vel_msg);
         lineupAvairable_ = false;
         moveExecute_ = false;
-        finishLineup()
+        finishLineup();
         return;
     }
 
     tf2::Quaternion q;
-    tf2::fromMsg(curPose.rotation, q);
-    float roll, pitch, yaw;
+    tf2::fromMsg(curPose.orientation, q);
+    double roll, pitch, yaw;
     tf2::getEulerYPR(q, yaw, pitch, roll);
-    vel_msg.angular.z = 0.5 * (theta - yaw);
-    vel_msg.linear.x = 4.0;
+
+    double angle_diff = theta - yaw;
+    while (angle_diff > M_PI) angle_diff -= 2*M_PI;
+    while (angle_diff < -M_PI) angle_diff += 2*M_PI;
+    printf("theta: %f, rot:%f\n", theta, angle_diff);
+    vel_msg.angular.z = 0.5 * angle_diff;
+
+    vel_msg.linear.x = 0.2;
     pub_vel_->publish(vel_msg);
 }
 

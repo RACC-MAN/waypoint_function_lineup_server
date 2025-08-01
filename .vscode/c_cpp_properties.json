@@ -1,0 +1,46 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/racc_man/waypoint_ws/install/waypoint_visualizer/include/**",
+        "/home/racc_man/waypoint_ws/install/waypoint_rviz_plugins/include/**",
+        "/home/racc_man/waypoint_ws/install/waypoint_navigator/include/**",
+        "/home/racc_man/waypoint_ws/install/waypoint_manager_utils/include/**",
+        "/home/racc_man/waypoint_ws/install/waypoint_function_wait_server/include/**",
+        "/home/racc_man/waypoint_ws/install/waypoint_function_skip_server/include/**",
+        "/home/racc_man/waypoint_ws/install/waypoint_function_server_example/include/**",
+        "/home/racc_man/waypoint_ws/install/waypoint_function_lineup_server/include/**",
+        "/home/racc_man/waypoint_ws/install/waypoint_function_server/include/**",
+        "/home/racc_man/waypoint_ws/install/waypoint_function_msgs/include/**",
+        "/home/racc_man/turtlebot3_ws/install/turtlebot3_fake_node/include/**",
+        "/home/racc_man/turtlebot3_ws/install/turtlebot3_msgs/include/**",
+        "/home/racc_man/turtlebot3_ws/install/turtlebot3_gazebo/include/**",
+        "/home/racc_man/turtlebot3_ws/install/realsense2_camera/include/**",
+        "/home/racc_man/turtlebot3_ws/install/realsense2_camera_msgs/include/**",
+        "/home/racc_man/turtlebot3_ws/install/dynamixel_sdk_custom_interfaces/include/**",
+        "/home/racc_man/turtlebot3_ws/install/dynamixel_sdk/include/**",
+        "/opt/ros/humble/include/**",
+        "/home/racc_man/waypoint_ws/src/waypoint_function_lineup_server/include/**",
+        "/home/racc_man/waypoint_ws/src/waypoint_manager/waypoint_function_server/waypoint_function_server/include/**",
+        "/home/racc_man/waypoint_ws/src/waypoint_manager/waypoint_function_server/waypoint_function_server_example/include/**",
+        "/home/racc_man/waypoint_ws/src/waypoint_manager/waypoint_function_server/waypoint_function_skip_server/include/**",
+        "/home/racc_man/waypoint_ws/src/waypoint_manager/waypoint_function_server/waypoint_function_wait_server/include/**",
+        "/home/racc_man/waypoint_ws/src/waypoint_manager/waypoint_manager_utils/include/**",
+        "/home/racc_man/waypoint_ws/src/waypoint_manager/waypoint_navigator/include/**",
+        "/home/racc_man/waypoint_ws/src/waypoint_manager/waypoint_rviz_plugins/include/**",
+        "/home/racc_man/waypoint_ws/src/waypoint_manager/waypoint_visualizer/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}
