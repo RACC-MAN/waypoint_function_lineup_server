@@ -5,8 +5,12 @@
 
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <geometry_msgs/msg/pose_with_covariance_stamped.hpp>
+#include <geometry_msgs/msg/pose.hpp>
 #include <sensor_msgs/msg/laser_scan.hpp>
+#include <geometry_msgs/msg/twist.hpp>
 #include <std_msgs/msg/string.hpp>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
+#include <tf2/utils.h> 
 
 #include <cmath>
 
@@ -17,25 +21,33 @@ namespace waypoint_function
         public:
             explicit LineupServer(const rclcpp::NodeOptions & options);
             void Update(const std_msgs::msg::Empty::SharedPtr) override;
-            void FunctionCallback(const std::shared_ptr<waypoint_function_msgs::srv::Command::Request> request,
-                    std::shared_ptr<waypoint_function_msgs::srv::Command::Response> response) override;
+            void FunctionCallback(const std::shared_ptr<waypoint_function_msgs::srv::Command::Request> ,
+                    std::shared_ptr<waypoint_function_msgs::srv::Command::Response> ) override;
 
         private:
 			void targetPoseCallback(const geometry_msgs::msg::PoseStamped::SharedPtr msg);
 			void currentPoseCallback(const geometry_msgs::msg::PoseWithCovarianceStamped::SharedPtr msg);
 			void scanCallback(const sensor_msgs::msg::LaserScan::SharedPtr msg);
-            float calc_distance(geometry_msgs::msg::Point pos1, geometry_msgs::msg::Point pos2);
+            void send_move_direction();
+            void finishLineup();
 
-			bool lineupAvairable_;
-			float dist_tolerance_ = 1.0;
-			int scan_tolerance_ = 10;
-            geometry_msgs::msg::Point tarPoint;
-            geometry_msgs::msg::Point curPoint;
+            bool moveExecute_ = false;
+			bool lineupAvairable_ = false;
+            int frame_counter_ = 3;
+			float dist_tolerance_ = 0.3;
+            int frame_tolerance_ = 5;
+            float scan_range_x_ = 0.5;
+            float scan_range_y_ = 0.5;
+			int scan_tolerance_ = 2;
+
+            geometry_msgs::msg::Pose tarPose;
+            geometry_msgs::msg::Pose curPose;
 
             rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr tarPose_sub_;
             rclcpp::Subscription<geometry_msgs::msg::PoseWithCovarianceStamped>::SharedPtr curPose_sub_;
             rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr scan_sub_;
-            rclcpp::Publisher<std_msgs::msg::String>::SharedPtr nav_handle_;
+            rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr pub_vel_;
+            rclcpp::TimerBase::SharedPtr timer_;
 
             std::string SERVER_NAME    = "lineup_server";
             std::string COMMAND_HEADER = "lineup";
